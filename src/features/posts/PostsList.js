@@ -29,7 +29,9 @@ let PostExcerpt = ({ post }) => {
 export const PostsList = () => {
 
     const {
-        data: posts,//undefined until the first response is received
+        //undefined until the first response is received,
+        // fallback to empty array so that useMemo can always rely on a defined array
+        data: posts = [],
         isLoading, //will be true only if the first request is in progress, will be false from next calls
         /* isFetching, */ //enable isFetching to track loading status for any request
         isSuccess, //will be true if first request did succeed and we have cached data
@@ -37,12 +39,18 @@ export const PostsList = () => {
         error //the error itself, serialized
     } = useGetPostsQuery()
 
+    const sortedPosts = React.useMemo(() => {
+        const sorted = posts.slice()
+        sorted.sort((a,b) => b.date.localeCompare(a.date))
+        return sorted
+    },[posts])
+
   let content
 
   if (isLoading) {
     content = <Spinner text="Loading..." />
   } else if (isSuccess) {
-    content = posts.map((post) => (
+    content = sortedPosts.map((post) => (
       <PostExcerpt key={post.id} post={post} />
     ))
   } else if (isError) {
