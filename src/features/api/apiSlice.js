@@ -5,10 +5,13 @@ export const apiSlice = createApi({
     reducerPath : 'api', //default,
     // '/fakeApi' as all requests prefix
     baseQuery : fetchBaseQuery({ baseUrl : '/fakeApi' }),
+    // an array of data types involved in this slice as strings
+    tagTypes: ['Post'],
     // operations and requests
     endpoints: builder => ({
         getPosts: builder.query({
-            query:  () => '/posts'// '/fakeApi/posts'
+            query:  () => '/posts', // '/fakeApi/posts'
+            providesTags : ['Post'] // data the query provides by tags
         }),
         getPost : builder.query({
             query: (postId) => `/posts/${postId}`// '/fakeApi/posts/{postId}'
@@ -18,7 +21,8 @@ export const apiSlice = createApi({
                 method: "POST",
                 url : '/posts', // '/fakeApi/posts'
                 body: updatedPost
-            })
+            }),
+            invalidatesTags : ['Post'] // data types which cache gets outdated on mutation usage as strings
         })
     })
 })
