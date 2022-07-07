@@ -23,6 +23,13 @@ export const apiSlice = createApi({
                 body: updatedPost
             }),
             invalidatesTags : ['Post'] // data types which cache gets outdated on mutation usage as strings
+        }),
+        editPost : builder.mutation({
+            query: post => ({
+                method: "PATCH",
+                url: `/posts/${post.id}`,// '/fakeApi/posts'
+                body: post
+            })
         })
     })
 })
@@ -32,5 +39,6 @@ export const apiSlice = createApi({
 export const {
     useGetPostsQuery,
     useGetPostQuery,
-    useAddNewPostMutation
+    useAddNewPostMutation,
+    useEditPostMutation
 } = apiSlice
