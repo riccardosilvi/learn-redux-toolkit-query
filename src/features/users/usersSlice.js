@@ -1,20 +1,21 @@
 import {
+  createEntityAdapter,
   createSelector
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
-/*
+
 const usersAdapter = createEntityAdapter();
 
 const initialState = usersAdapter.getInitialState();
-
- */
-
 
 //we can extend the main apiSlice via injectEndpoints so that we can keep users endpoints here
 export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints : builder => ({
     getUsers: builder.query({
       query: () => '/users', // '/fakeApi/users'
+      transformResponse : (responseData) => {
+        return usersAdapter.setAll(initialState, responseData)
+      }
     })
   })
 })
@@ -33,20 +34,13 @@ export const selectUserResults = extendedApiSlice.endpoints.getUsers.select()
 
 const emptyUsers = []
 
-export const selectAllUsers = createSelector(
+export const selectUsersData = createSelector(
   selectUserResults,
-  userResults => userResults?.data ?? emptyUsers //provide a fallback data set
+  usersResult => usersResult.data
 )
 
-export const selectUserById = createSelector(
-    selectAllUsers,
-    (state, userId) => userId,
-    (users, userId) => users.find(user => user.id === userId)
-)
-
-/*
 export const {
   selectAll: selectAllUsers,
   selectById: selectUserById
-} = usersAdapter.getSelectors((state) => state.users);
-*/
+} = usersAdapter.getSelectors((state) => selectUsersData(state) ?? initialState);
+
