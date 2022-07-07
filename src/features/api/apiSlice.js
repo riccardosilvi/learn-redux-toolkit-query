@@ -45,9 +45,6 @@ export const apiSlice = createApi({
             // arg is the query argument ( post )
             // LIST tag gets automatically invalidated
             invalidatesTags : (_, __, arg) => [{ type: 'Post', id : arg.id}]
-        }),
-        getUsers: builder.query({
-            query: () => '/users', // '/fakeApi/users'
         })
     })
 })

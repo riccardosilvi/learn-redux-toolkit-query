@@ -9,10 +9,25 @@ const initialState = usersAdapter.getInitialState();
 
  */
 
+
+//we can extend the main apiSlice via injectEndpoints so that we can keep users endpoints here
+export const extendedApiSlice = apiSlice.injectEndpoints({
+  endpoints : builder => ({
+    getUsers: builder.query({
+      query: () => '/users', // '/fakeApi/users'
+    })
+  })
+})
+
+//and export its queries/mutation hooks
+export const {
+  useGetUsersQuery
+} = extendedApiSlice
+
 //since we invoke the getUsers query in index js via the initiate function
 //we can select its fetched data through the endpoints[queryName].select method
 
-export const selectUserResults = apiSlice.endpoints.getUsers.select()
+export const selectUserResults = extendedApiSlice.endpoints.getUsers.select()
 
 //we can then build upon that with reselect composed and memoized selectors
 
