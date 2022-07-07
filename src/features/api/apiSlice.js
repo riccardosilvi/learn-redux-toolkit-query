@@ -45,6 +45,17 @@ export const apiSlice = createApi({
             // arg is the query argument ( post )
             // LIST tag gets automatically invalidated
             invalidatesTags : (_, __, arg) => [{ type: 'Post', id : arg.id}]
+        }),
+        addReaction : builder.mutation({
+            query: ({ postId, reaction }) => ({
+                url: `posts/${postId}/reactions`,
+                method: 'POST',
+                body: { reaction }
+            }),
+            // invalidates based on post id
+            // arg is the query argument ( post )
+            // LIST tag gets automatically invalidated
+            invalidatesTags : (_, __, arg) => [{ type: 'Post', id : arg.id}]
         })
     })
 })
@@ -55,5 +66,6 @@ export const {
     useGetPostsQuery,
     useGetPostQuery,
     useAddNewPostMutation,
-    useEditPostMutation
+    useEditPostMutation,
+    useAddReactionMutation
 } = apiSlice
