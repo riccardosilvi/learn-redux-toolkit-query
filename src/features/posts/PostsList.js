@@ -5,7 +5,7 @@ import { Spinner } from '../../components/Spinner'
 import { PostAuthor } from './PostAuthor'
 import { TimeAgo } from './TimeAgo'
 import { ReactionButtons } from './ReactionButtons'
-import { useGetPostsQuery } from "../apiSlice";
+import { useGetPostsQuery } from "../api/apiSlice";
 
 let PostExcerpt = ({ post }) => {
 
