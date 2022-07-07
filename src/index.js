@@ -14,6 +14,8 @@ async function start() {
   // Start our mock API server
   await worker.start({ onUnhandledRequest: 'bypass' })
 
+  // since toolkit is framework-agnostic it provides ways to invoke
+  // endpoints queries and trigger them (initiate starts the initial fetch round)
   store.dispatch(apiSlice.endpoints.getUsers.initiate())
 
   ReactDOM.render(
