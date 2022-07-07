@@ -52,10 +52,30 @@ export const apiSlice = createApi({
                 method: 'POST',
                 body: { reaction }
             }),
-            // invalidates based on post id
-            // arg is the query argument ( post )
-            // LIST tag gets automatically invalidated
-            invalidatesTags : (_, __, arg) => [{ type: 'Post', id : arg.id}]
+            //implementing OPTIMISTIC UPDATE
+            async onQueryStarted({ postId, reaction}, { dispatch, queryFulfilled }) {
+                //as the name states on query started
+                //we can optimistically patch state
+                //adding to the single post reaction count
+                const patchResult = dispatch(
+                    apiSlice.util.updateQueryData(
+                        'getPosts',
+                        undefined,
+                        draft => {
+                            const post = draft.find(post => post.id === postId)
+                            if(post){
+                                post.reactions[reaction]++
+                            }
+                        })
+                    )
+                //we try to wait for the response in
+                try {
+                    await queryFulfilled
+                } catch (e) {
+                    //if the call fails undo the patch
+                    patchResult.undo()
+                }
+            }
         })
     })
 })
