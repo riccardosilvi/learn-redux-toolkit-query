@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import {  useSelector } from 'react-redux'
 
-import { addNewPost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
+import { useAddNewPostMutation } from "../api/apiSlice";
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
-  const dispatch = useDispatch()
+  //mutation hook returns two values
+  // - trigger function
+  // - an object with metadata related to the currently executing request
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
   const users = useSelector(selectAllUsers)
 
   const onTitleChanged = (e) => setTitle(e.target.value)
@@ -18,20 +20,18 @@ export const AddPostForm = () => {
   const onAuthorChanged = (e) => setUserId(e.target.value)
 
   const canSave =
-    [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+    [title, content, userId].every(Boolean) && !isLoading
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
-        await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+        // unwrap lets us trigger the catch block in case of errors
+        await addNewPost({ title, content, user: userId }).unwrap()
         setTitle('')
         setContent('')
         setUserId('')
       } catch (err) {
         console.error('Failed to save the post: ', err)
-      } finally {
-        setAddRequestStatus('idle')
       }
     }
   }
