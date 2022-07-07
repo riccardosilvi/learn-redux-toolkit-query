@@ -54,7 +54,6 @@ export const apiSlice = createApi({
 export const {
     useGetPostsQuery,
     useGetPostQuery,
-    useGetUsersQuery,
     useAddNewPostMutation,
     useEditPostMutation
 } = apiSlice
